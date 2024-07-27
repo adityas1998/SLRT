@@ -29,7 +29,7 @@ def main(args):
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = True
     np.random.seed(args.seed)
-
+    print(f"args: {args}")
     if args.featurize_mode:
         msg = "To perform featurization, use evaluation mode"
         assert args.evaluate and args.evaluate_video, msg
@@ -149,7 +149,7 @@ def main(args):
         train_datasets=args.datasetname, val_datasets=args.datasetname,
     )
     train_loader, val_loader, meanstd = mdl._get_loaders(args)
-
+    print(f"after mdl controlwas returned.")
     train_mean = meanstd[0]
     train_std = meanstd[1]
     val_mean = meanstd[2]

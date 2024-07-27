@@ -55,7 +55,7 @@ def do_epoch(
     topk=[1],
     save_dir=''
 ):
-
+    print(f"do_epoch was called.")
     batch_time = AverageMeter()
     data_time = AverageMeter()
     losses = [AverageMeter()]
@@ -97,8 +97,9 @@ def do_epoch(
         inputs_cuda = inputs.cuda()
         with torch.no_grad():
         # forward pass
+        #domain agnostic encoder output
             outputs_cuda = model(inputs_cuda)
-
+            # print(f"model output gen: {outputs_cuda['logits'].shape}")
 
         # compute the loss
 

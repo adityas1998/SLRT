@@ -109,8 +109,8 @@ class VideoDataset(data.Dataset):
 
         # Frame reads
         if getattr(self, "gpu_collation", False):
-            msg = "expected collation dim == 256"
-            assert self.gpu_collation == 256, msg
+            msg = "expected collation dim == 512"
+            assert self.gpu_collation == 512, msg
             rgb = torch.zeros(3, nframes, self.gpu_collation, self.gpu_collation)
         else:
             rgb = torch.zeros(

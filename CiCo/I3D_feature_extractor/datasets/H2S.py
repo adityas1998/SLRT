@@ -71,23 +71,29 @@ class H2S(VideoDataset):
 
 
         frame_info_file=f'{self.split}_frame_dict.pkl'
+        print(f'frame_info_file {frame_info_file}')
         with open('%s' % (frame_info_file), 'rb') as f:
             frame_info = pickle.load(f)
+        print(f'frame_info {len(frame_info)}')
         self.num_frames = {}
         for train in self.train:
             key = train.split('/')[-1].split('.mp4')[0]
             self.num_frames[train] = frame_info[key]
+        print(f'num_frames {len(self.num_frames)}')
         self.videos = {}
         if evaluate_video:
+            print(f"evaluating!")
             self.valid, self.t_beg,self.num_clips = self._slide_windows(self.train,self.stride)
             i=0
+            print(f"slide windows done")
             for data_index in self.train:
                 frame_ix = self.num_frames[data_index]
                 self.videos[data_index]=self._get_single_video(i,data_index,range(frame_ix))
                 self.videos[data_index]['rgb']=im_to_video(self.videos[data_index]['rgb'])
                 i+=1
-
+        print(f'num_clips {self.num_clips}')
         VideoDataset.__init__(self)
+        print("After VideoDataset initialization")
 
     def _set_datasetname(self):
         self.datasetname = "H2S"

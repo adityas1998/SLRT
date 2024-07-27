@@ -18,12 +18,17 @@ class MultiDataLoader:
         common_kwargs = {
             "stride": args.stride,
             "inp_res": args.inp_res,
-            "resize_res": args.resize_res,
+            # "resize_res": args.resize_res,
+            "resize_res": 512,
             "num_in_frames": args.num_in_frames,
-            "gpu_collation": args.gpu_collation,
+            # "num_in_frames": 1,
+            # "gpu_collation": args.gpu_collation
+            "gpu_collation":  512,
         }
         loaders = {}
+        print([i for i in self.datasets.items()])
         for split, dataset_name in self.datasets.items():
+            print(f"split:{split}")
             if not dataset_name:
                 dataset = []
                 break
@@ -41,7 +46,7 @@ class MultiDataLoader:
             elif dataset_name == "csl":
                 dataset = datasets.csl(**kwargs)
             loaders[split] = dataset
-
+        print(f"got the loaders")
         # TODO: dataloader_train = mock.Mock()
         dataloader_train = loaders["train"]
         dataloader_val = loaders["val"]
@@ -88,4 +93,5 @@ class MultiDataLoader:
             dataloader_val.mean,
             dataloader_val.std,
         ]
+        print(f"got the loaders ready")
         return train_loader, val_loader, meanstd
