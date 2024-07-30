@@ -18,12 +18,12 @@ class MultiDataLoader:
         common_kwargs = {
             "stride": args.stride,
             "inp_res": args.inp_res,
-            # "resize_res": args.resize_res,
-            "resize_res": 512,
+            "resize_res": args.resize_res,
+            # "resize_res": 512,
             "num_in_frames": args.num_in_frames,
             # "num_in_frames": 1,
-            # "gpu_collation": args.gpu_collation
-            "gpu_collation":  512,
+            "gpu_collation": args.gpu_collation
+            # "gpu_collation":  512,
         }
         loaders = {}
         print([i for i in self.datasets.items()])

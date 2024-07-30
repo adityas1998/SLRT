@@ -169,7 +169,8 @@ def build_parser():
     parser.add_argument(
         "--resize_res",
         type=int,
-        default=256,
+        # default=256,
+        default = 512,
         help="Spatial resolution of the resized input before crop (300 | 130).",
     )
     parser.add_argument(
@@ -232,7 +233,8 @@ def build_parser():
     parser.add_argument(
         "--gpu_collation",
         type=int,
-        default=256,
+        # default=256,
+        default=512,
         help="If set, shift the collation and preprocessing onto the GPU.",
     )
     parser.add_argument(

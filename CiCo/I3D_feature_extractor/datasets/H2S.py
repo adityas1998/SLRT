@@ -49,10 +49,14 @@ class H2S(VideoDataset):
         self.train_file = sorted(os.listdir(os.path.join(self.root_path,self.split)))
 
         ##split the dataset into multiple pieces
+        # if self.split=='train':
+        #     N=256
+        # else:
+        #     N=16
         if self.split=='train':
-            N=256
+            N=8
         else:
-            N=16
+            N=8
         rank=rank
         print(rank)
         print(f'all videos #{len(self.train_file)}')

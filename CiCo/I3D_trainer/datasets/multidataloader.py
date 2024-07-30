@@ -21,8 +21,10 @@ class MultiDataLoader:
             "resize_res": args.resize_res,
             "num_in_frames": args.num_in_frames,
             "gpu_collation": args.gpu_collation,
+            "modality": args.modality,
         }
         loaders = {}
+        print(f"modality: {args.modality}")
         for split, dataset_name in self.datasets.items():
             if not dataset_name:
                 dataset = []

@@ -10,6 +10,9 @@ import numpy as np
 import torch
 import torch.utils.data as data
 from beartype import beartype
+import sys
+sys.path.append("omnidata_tools/torch/")
+from omnidata_tools.torch.demo_normal import rgb_to_surface_normal
 
 from utils.imutils import (im_to_numpy, im_to_torch, im_to_video,
                            resize_generic, video_to_im)
@@ -71,7 +74,7 @@ class VideoDataset(data.Dataset):
         valid = np.asarray(test)
         return valid, t_beg
 
-    def _load_rgb(self, ind, frame_ix):
+    def _load_rgb(self, ind, frame_ix, modality = "rgb"):
         """Loads the video frames from file
             frame_ix could be range(t, t + nframes) for consecutive reading
                 or a random sorted subset of [0, video_length] of size nframes
@@ -107,8 +110,10 @@ class VideoDataset(data.Dataset):
 
         # Frame reads
         if getattr(self, "gpu_collation", False):
-            msg = "expected collation dim == 256"
-            assert self.gpu_collation == 256, msg
+            # msg = "expected collation dim == 256"
+            # assert self.gpu_collation == 256, msg
+            msg = "expected collation dim == 512"
+            assert self.gpu_collation == 512, msg
             rgb = torch.zeros(3, nframes, 224, 224)
         else:
             rgb = torch.zeros(
@@ -130,6 +135,8 @@ class VideoDataset(data.Dataset):
                 if use_cv2:
                     frame = np.array(Image.fromarray(frame).resize((224, 224)))
                     # BGR (OpenCV) to RGB (Torch)
+                    if modality == "normal":
+                        frame = rgb_to_surface_normal(frame)
                     frame = frame[:, :, [2, 1, 0]]
                 # CxHxW (3, 240, 320), 0..1 --> np.transpose(frame, [2, 0, 1]) / 255.0
                 rgb_t = im_to_torch(frame)
@@ -302,7 +309,7 @@ class VideoDataset(data.Dataset):
         minibatch["rgb"] = rgb
         return minibatch
 
-    def _get_single_video(self, index, data_index, frame_ix):
+    def _get_single_video(self, index, data_index, frame_ix, modality):
         """Loads/augments/returns the video data
         :param index: Index wrt to the data loader
         :param data_index: Index wrt to train/valid list
@@ -322,7 +329,7 @@ class VideoDataset(data.Dataset):
             return data
         # Otherwise the input is RGB
         else:
-            rgb = self._load_rgb(data_index, frame_ix)
+            rgb = self._load_rgb(data_index, frame_ix, modality=modality)
             if getattr(self, "mask_rgb", False):
                 rgb = self._mask_rgb(
                     rgb,
@@ -417,7 +424,7 @@ class VideoDataset(data.Dataset):
         data_index=index
 
         frame_ix = self._sample_frames(index, data_index)
-        return self._get_single_video(index, data_index, frame_ix)
+        return self._get_single_video(index, data_index, frame_ix, self.modality)
 
     def __len__(self):
         if self.setname == "train":

@@ -30,6 +30,7 @@ class H2S(VideoDataset):
         gpu_collation=False,
         assign_labels="auto",
         rank=0,
+        modality = "rgb"
     ):
         self.setname=setname
         self.setname = setname  # train, val or test
@@ -70,7 +71,7 @@ class H2S(VideoDataset):
         if evaluate_video:
             self.valid, self.t_beg = self._slide_windows(self.valid)
 
-
+        self.modality = modality
         VideoDataset.__init__(self)
 
     def _set_datasetname(self):
